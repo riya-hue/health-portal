@@ -2,11 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Health Checkup</title>
-
+    <title>Heart Disease Risk Assessment</title>
     <link rel="stylesheet" href="style.css" />
     <script src="config.js"></script>
-
     <style>
       body {
         margin: 0;
@@ -17,7 +15,6 @@
         align-items: center;
         min-height: 100vh;
       }
-
       .container {
         max-width: 850px;
         width: 95%;
@@ -26,42 +23,28 @@
         border-radius: 14px;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
       }
-
       h1 {
         text-align: center;
         color: #003566;
         margin-bottom: 10px;
       }
-
       .description {
         text-align: center;
         font-size: 18px;
         color: #555;
         margin-bottom: 30px;
       }
-
-      .section {
-        margin-bottom: 35px;
-      }
-
-      h2 {
-        color: #1e90ff;
-        margin-bottom: 15px;
-      }
-
       form {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 12px;
       }
-
       input {
         padding: 10px;
         font-size: 16px;
         border-radius: 6px;
         border: 1px solid #ccc;
       }
-
       button {
         grid-column: 1 / -1;
         padding: 12px;
@@ -73,11 +56,9 @@
         border-radius: 8px;
         cursor: pointer;
       }
-
       button:hover {
         background: #0b6fc2;
       }
-
       pre {
         background: #f4f9ff;
         padding: 15px;
@@ -86,81 +67,33 @@
         font-size: 16px;
         overflow-x: auto;
       }
-
-      .dashboard-link {
-        display: block;
-        text-align: center;
-        margin-top: 25px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #1e90ff;
-        text-decoration: none;
-      }
-
-      .dashboard-link:hover {
-        text-decoration: underline;
-      }
     </style>
   </head>
-
   <body>
     <div class="container">
-      <h1>🩺 AI-Powered Health Checkup</h1>
+      <h1>🩺 Heart Disease Risk Assessment</h1>
       <p class="description">
-        Enter your health details below to receive instant, AI-based health risk
-        analysis for early disease detection.
+        Enter your health details below to receive AI-based heart disease risk prediction.
       </p>
 
-      <!-- Diabetes -->
-      <div class="section">
-        <h2>Diabetes Risk Assessment</h2>
-        <form id="diabetesForm">
-          <input name="Pregnancies" placeholder="Pregnancies" required />
-          <input name="Glucose" placeholder="Glucose Level" required />
-          <input name="BloodPressure" placeholder="Blood Pressure" required />
-          <input name="SkinThickness" placeholder="Skin Thickness" required />
-          <input name="Insulin" placeholder="Insulin Level" required />
-          <input name="BMI" placeholder="Body Mass Index (BMI)" required />
-          <input
-            name="DiabetesPedigreeFunction"
-            placeholder="Diabetes Pedigree Function"
-            required
-          />
-          <input name="Age" placeholder="Age" required />
-          <button>Analyze Diabetes</button>
-        </form>
-      </div>
-
-      <!-- Heart -->
-      <div class="section">
-        <h2>Heart Disease Risk Assessment</h2>
-        <form id="heartForm">
-          <input name="age" placeholder="Age" required />
-          <input name="sex" placeholder="Sex (1 = Male, 0 = Female)" required />
-          <input name="cp" placeholder="Chest Pain Type" required />
-          <input
-            name="trestbps"
-            placeholder="Resting Blood Pressure"
-            required
-          />
-          <input name="chol" placeholder="Cholesterol" required />
-          <input name="fbs" placeholder="Fasting Blood Sugar" required />
-          <input name="restecg" placeholder="ECG Result" required />
-          <input name="thalach" placeholder="Max Heart Rate" required />
-          <input name="exang" placeholder="Exercise Induced Angina" required />
-          <input name="oldpeak" placeholder="Oldpeak" required />
-          <input name="slope" placeholder="Slope" required />
-          <input name="ca" placeholder="Number of Major Vessels" required />
-          <input name="thal" placeholder="Thal" required />
-          <button>Analyze Heart Disease</button>
-        </form>
-      </div>
+      <form id="heartForm">
+        <input name="age" placeholder="Age" required />
+        <input name="sex" placeholder="Sex (1 = Male, 0 = Female)" required />
+        <input name="cp" placeholder="Chest Pain Type" required />
+        <input name="trestbps" placeholder="Resting Blood Pressure" required />
+        <input name="chol" placeholder="Cholesterol" required />
+        <input name="fbs" placeholder="Fasting Blood Sugar" required />
+        <input name="restecg" placeholder="ECG Result" required />
+        <input name="thalach" placeholder="Max Heart Rate" required />
+        <input name="exang" placeholder="Exercise Induced Angina" required />
+        <input name="oldpeak" placeholder="Oldpeak" required />
+        <input name="slope" placeholder="Slope" required />
+        <input name="ca" placeholder="Number of Major Vessels" required />
+        <input name="thal" placeholder="Thal" required />
+        <button>Analyze Heart Disease</button>
+      </form>
 
       <pre id="result"></pre>
-
-      <a href="dashboard.html" class="dashboard-link">
-        ➡ View Detailed Health Dashboard
-      </a>
     </div>
 
     <script>
@@ -170,40 +103,22 @@
         return data;
       }
 
-      async function submitForm(form, endpoint, type) {
-        const res = await fetch(`${BACKEND_URL}/${endpoint}`, {
+      async function submitForm(form) {
+        const res = await fetch(`${BACKEND_URL}/analyze_heart`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(toJSON(form)),
         });
 
         const result = await res.json();
-
-        localStorage.setItem(
-          "lastHealthResult",
-          JSON.stringify({
-            type,
-            ...result,
-            time: new Date().toLocaleString(),
-          })
-        );
-
-        document.getElementById("result").textContent = JSON.stringify(
-          result,
-          null,
-          2
-        );
+        document.getElementById("result").textContent = JSON.stringify(result, null, 2);
       }
-
-      document.getElementById("diabetesForm").onsubmit = (e) => {
-        e.preventDefault();
-        submitForm(e.target, "analyze_diabetes", "Diabetes");
-      };
 
       document.getElementById("heartForm").onsubmit = (e) => {
         e.preventDefault();
-        submitForm(e.target, "analyze_heart", "Heart Disease");
+        submitForm(e.target);
       };
     </script>
   </body>
 </html>
+
